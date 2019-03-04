@@ -1,0 +1,32 @@
+{
+    "name": "aengine/slim-memory",
+    "description": "Memory extension for Slim Framework by AEngine",
+    "keywords": [
+        "php",
+        "framework",
+        "AEngine",
+        "Slim",
+        "Memory",
+        "Memcache",
+        "Redis",
+        "PDO"
+    ],
+    "homepage": "https://github.com/AEngine/slim-memory",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksey Ilyin",
+            "email": "alksily@icloud.com",
+            "homepage": "https://www.facebook.com/aleksey.ily",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AEngine\\Slim\\Memory\\": "src/"
+        }
+    }
+}
