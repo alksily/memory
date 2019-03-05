@@ -1,6 +1,6 @@
 <?php
 
-namespace AEngine\Slim\Memory;
+namespace AEngine\Memory;
 
 use Exception;
 

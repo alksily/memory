@@ -1,10 +1,9 @@
-AEngine Slim Memory
+AEngine Memory
 ====
 Work with Key-Value storage by user-friendly interface.
 
 #### Requirements
 * PHP >= 7.0
-* Slim >= 3.0.0
 
 #### Supporting
 * Memcache
@@ -13,61 +12,34 @@ Work with Key-Value storage by user-friendly interface.
 #### Installation
 Run the following command in the root directory of your web project:
   
-> `composer require aengine/slim-memory`
+> `composer require aengine/memory`
 
 ### Usage
 Connect to the server  
-Note: by default connect to Memcache
 ```php
-return [
-    'settings' => [
-        'displayErrorDetails' => true, // set to false in production
-        'addContentLengthHeader' => false, // Allow the web server to send the content-length header
-
-        // Memory settings
-        'memory' => [
-            [
-                'host'    => 'localhost',
-                'port'    => '11211',
-                'timeout' => 10,
-                // additional can be passed options, server-role and pool name:
-                // 'driver' => 'memcache', // or redis
-            ]
-        ],
-```
-
-Add function in DI by edit src/dependencies.php file
-```php
-// register memory plugin
-$container['memory'] = function ($c) {
-    $settings = $c->get('settings')['memory'];
-    $mem = new AEngine\Slim\Memory\Mem($settings);
-
-    return $mem;
-};
-```
-
-Example read and write
-```php
-$app->get('/example-route', function ($request, $response, $args) {
-    if ($this->memory->get('kilobyte', -1) < 0) {
-        $this->memory->set('kilobyte', 1024);
-    }
-});
+$mem = new AEngine\Memory\Mem([
+    [
+        'host'    => 'localhost',
+        'port'    => '11211',
+        'timeout' => 10,
+        // additional can be passed options, server-role and pool name:
+        // 'driver' => 'memcache', // or redis
+    ]
+]);
 ```
 
 Write data to storage
 ```php
-$this->memory->set('foo', 'bar');
+$mem->set('foo', 'bar');
 ```
 
 Read data form storage
 ```php
-$this->memory->get('foo', /* 'default value' */);
+$mem->get('foo', /* 'default value' */);
 
 // -- or --
 
-$this->memory->get('foo', function () {
+$mem->get('foo', function () {
     // some action, e.g. just return string
     return 'baz';
 });
@@ -77,7 +49,7 @@ $this->memory->get('foo', function () {
 
 ```php
 // set rows
-$this->memory->setMultiple([
+$mem->setMultiple([
     'cat:0' => 'Kiki',
     'cat:1' => 'Lucky',
     'dog:0' => 'Bucks',
@@ -87,28 +59,28 @@ $this->memory->setMultiple([
 ], 3600, 'animal');
 
 // get data
-$animals = $this->memory->getMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
+$animals = $mem->getMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
 
 // remove data
-$this->memory->deleteMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
+$mem->deleteMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
 ```
 
 #### Tags
 
 ```php
 // set few rows
-$this->memory->set('cat:0', 'Kiki', 3600, 'animal');
-$this->memory->set('cat:1', 'Lucky', 3600, 'animal');
-$this->memory->set('dog:0', 'Bucks', 3600, 'animal');
-$this->memory->set('cat:2', 'Simon', 3600, 'animal');
-$this->memory->set('dog:1', 'Eugene', 3600, 'animal');
-$this->memory->set('cat:3', 'Rocky', 3600, 'animal');
+$mem->set('cat:0', 'Kiki', 3600, 'animal');
+$mem->set('cat:1', 'Lucky', 3600, 'animal');
+$mem->set('dog:0', 'Bucks', 3600, 'animal');
+$mem->set('cat:2', 'Simon', 3600, 'animal');
+$mem->set('dog:1', 'Eugene', 3600, 'animal');
+$mem->set('cat:3', 'Rocky', 3600, 'animal');
 
 // get data as array
-$animal = $this->memory->getByTag('animal');
+$animal = $mem->getByTag('animal');
 
 // remove data
-$this->memory->deleteByTag('animal');
+$mem->deleteByTag('animal');
 ```
 
 #### Contributing

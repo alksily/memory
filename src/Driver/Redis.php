@@ -1,9 +1,9 @@
 <?php
 
-namespace AEngine\Slim\Memory\Driver;
+namespace AEngine\Memory\Driver;
 
-use AEngine\Slim\Memory\CacheException;
-use AEngine\Slim\Memory\Interfaces\DriverInterface;
+use AEngine\Memory\CacheException;
+use AEngine\Memory\Interfaces\DriverInterface;
 
 class Redis implements DriverInterface
 {

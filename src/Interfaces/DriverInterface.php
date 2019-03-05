@@ -1,6 +1,6 @@
 <?php
 
-namespace AEngine\Slim\Memory\Interfaces;
+namespace AEngine\Memory\Interfaces;
 
 interface DriverInterface
 {

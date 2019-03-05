@@ -1,8 +1,8 @@
 <?php
 
-namespace AEngine\Slim\Memory;
+namespace AEngine\Memory;
 
-use AEngine\Slim\Memory\Interfaces\DriverInterface;
+use AEngine\Memory\Interfaces\DriverInterface;
 use RuntimeException;
 
 /**
@@ -73,7 +73,7 @@ class Mem
             switch (strtolower($config['driver'])) {
                 case 'memcache':
                     $this->connection[$role][] = function () use ($config) {
-                        return new \AEngine\Slim\Memory\Driver\Memcache(
+                        return new \AEngine\Memory\Driver\Memcache(
                             $config['host'],
                             $config['port'],
                             $config['timeout'],
@@ -83,7 +83,7 @@ class Mem
                     break;
                 case 'redis':
                     $this->connection[$role][] = function () use ($config) {
-                        return new \AEngine\Slim\Memory\Driver\Redis(
+                        return new \AEngine\Memory\Driver\Redis(
                             $config['host'],
                             $config['port'],
                             $config['timeout'],
