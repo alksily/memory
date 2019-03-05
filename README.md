@@ -4,6 +4,7 @@ Work with Key-Value storage by user-friendly interface.
 
 #### Requirements
 * PHP >= 7.0
+* Slim >= 3.0.0
 
 #### Supporting
 * Memcache

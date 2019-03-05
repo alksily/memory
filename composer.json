@@ -22,7 +22,8 @@
         }
     ],
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "ext-memcached || ext-redis": "*"
     },
     "autoload": {
         "psr-4": {
