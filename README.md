@@ -17,7 +17,7 @@ Run the following command in the root directory of your web project:
 ### Usage
 Connect to the server  
 ```php
-$mem = new AEngine\Memory\Mem([
+AEngine\Memory\Mem::initialize([
     [
         'host'    => 'localhost',
         'port'    => '11211',
@@ -30,16 +30,16 @@ $mem = new AEngine\Memory\Mem([
 
 Write data to storage
 ```php
-$mem->set('foo', 'bar');
+AEngine\Memory\Mem::set('foo', 'bar');
 ```
 
 Read data form storage
 ```php
-$mem->get('foo', /* 'default value' */);
+AEngine\Memory\Mem::get('foo', /* 'default value' */);
 
 // -- or --
 
-$mem->get('foo', function () {
+AEngine\Memory\Mem::get('foo', function () {
     // some action, e.g. just return string
     return 'baz';
 });
@@ -49,7 +49,7 @@ $mem->get('foo', function () {
 
 ```php
 // set rows
-$mem->setMultiple([
+AEngine\Memory\Mem::setMultiple([
     'cat:0' => 'Kiki',
     'cat:1' => 'Lucky',
     'dog:0' => 'Bucks',
@@ -59,28 +59,28 @@ $mem->setMultiple([
 ], 3600, 'animal');
 
 // get data
-$animals = $mem->getMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
+$animals = AEngine\Memory\Mem::getMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
 
 // remove data
-$mem->deleteMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
+AEngine\Memory\Mem::deleteMultiple(['cat:0', 'cat:1', 'dog:0', 'cat:2', 'dog:1', 'cat:3']);
 ```
 
 #### Tags
 
 ```php
 // set few rows
-$mem->set('cat:0', 'Kiki', 3600, 'animal');
-$mem->set('cat:1', 'Lucky', 3600, 'animal');
-$mem->set('dog:0', 'Bucks', 3600, 'animal');
-$mem->set('cat:2', 'Simon', 3600, 'animal');
-$mem->set('dog:1', 'Eugene', 3600, 'animal');
-$mem->set('cat:3', 'Rocky', 3600, 'animal');
+AEngine\Memory\Mem::set('cat:0', 'Kiki', 3600, 'animal');
+AEngine\Memory\Mem::set('cat:1', 'Lucky', 3600, 'animal');
+AEngine\Memory\Mem::set('dog:0', 'Bucks', 3600, 'animal');
+AEngine\Memory\Mem::set('cat:2', 'Simon', 3600, 'animal');
+AEngine\Memory\Mem::set('dog:1', 'Eugene', 3600, 'animal');
+AEngine\Memory\Mem::set('cat:3', 'Rocky', 3600, 'animal');
 
 // get data as array
-$animal = $mem->getByTag('animal');
+$animal = AEngine\Memory\Mem::getByTag('animal');
 
 // remove data
-$mem->deleteByTag('animal');
+AEngine\Memory\Mem::deleteByTag('animal');
 ```
 
 #### Contributing

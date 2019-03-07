@@ -15,35 +15,35 @@ class Mem
      *
      * @var bool
      */
-    public $disabled = false;
+    public static $disabled = false;
 
     /**
      * Prefix keys
      *
      * @var string
      */
-    public $prefix = '';
+    public static $prefix = '';
 
     /**
      * List of keys that are stored in the buffer
      *
      * @var array
      */
-    public $cachedKeys = [];
+    public static $cachedKeys = [];
 
     /**
      * Internal storage
      *
      * @var array
      */
-    protected $buffer = [];
+    protected static $buffer = [];
 
     /**
      * Array of connections
      *
      * @var array
      */
-    protected $connection = [
+    protected static $connection = [
         'master' => [],
         'slave'  => [],
     ];
@@ -55,7 +55,7 @@ class Mem
      *
      * @throws RuntimeException
      */
-    public function __construct(array $configs = [])
+    public static function initialize(array $configs = [])
     {
         $default = [
             'driver'  => 'memcache',
@@ -72,7 +72,7 @@ class Mem
 
             switch (strtolower($config['driver'])) {
                 case 'memcache':
-                    $this->connection[$role][] = function () use ($config) {
+                    static::$connection[$role][] = function () use ($config) {
                         return new \AEngine\Memory\Driver\Memcache(
                             $config['host'],
                             $config['port'],
@@ -82,7 +82,7 @@ class Mem
                     };
                     break;
                 case 'redis':
-                    $this->connection[$role][] = function () use ($config) {
+                    static::$connection[$role][] = function () use ($config) {
                         return new \AEngine\Memory\Driver\Redis(
                             $config['host'],
                             $config['port'],
@@ -105,28 +105,28 @@ class Mem
      * @return DriverInterface
      * @throws CacheException
      */
-    public function getInstance($useMaster = false)
+    public static function getInstance($useMaster = false)
     {
         $pool = [];
         $role = $useMaster ? 'master' : 'slave';
 
         switch (true) {
-            case !empty($this->connection[$role]):
-                $pool = $this->connection[$role];
+            case !empty(static::$connection[$role]):
+                $pool = static::$connection[$role];
                 break;
-            case !empty($this->connection['master']):
-                $pool = $this->connection['master'];
+            case !empty(static::$connection['master']):
+                $pool = static::$connection['master'];
                 $role = 'master';
                 break;
-            case !empty($this->connection['slave']):
-                $pool = $this->connection['slave'];
+            case !empty(static::$connection['slave']):
+                $pool = static::$connection['slave'];
                 $role = 'slave';
                 break;
         }
 
         if ($pool) {
             if (is_array($pool)) {
-                return $this->connection[$role] = $pool[array_rand($pool)]();
+                return static::$connection[$role] = $pool[array_rand($pool)]();
             } else {
                 return $pool;
             }
@@ -142,9 +142,9 @@ class Mem
      *
      * @return string
      */
-    protected function getKey($key)
+    protected static function getKey($key)
     {
-        return $this->prefix ? $this->prefix . ':' . $key : $key;
+        return static::$prefix ? static::$prefix . ':' . $key : $key;
     }
 
     /**
@@ -155,17 +155,17 @@ class Mem
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public static function get($key, $default = null)
     {
-        if (!$this->disabled) {
-            if (in_array($key, $this->buffer)) {
-                $value = $this->buffer[$key];
+        if (!static::$disabled) {
+            if (in_array($key, static::$buffer)) {
+                $value = static::$buffer[$key];
             } else {
-                $value = $this->getInstance(false)->get($this->getKey($key));
+                $value = static::getInstance(false)->get(static::getKey($key));
 
-                foreach ($this->cachedKeys as $k) {
+                foreach (static::$cachedKeys as $k) {
                     if ($key == $k) {
-                        $this->buffer[$key] = $value;
+                        static::$buffer[$key] = $value;
                     }
                 }
             }
@@ -187,13 +187,13 @@ class Mem
      * @return bool
      *
      */
-    public function set($key, $value, $ttl = null, $tag = null)
+    public static function set($key, $value, $ttl = null, $tag = null)
     {
-        if (isset($this->cachedKeys[$key])) {
-            unset($this->buffer[$key]);
+        if (isset(static::$cachedKeys[$key])) {
+            unset(static::$buffer[$key]);
         }
 
-        return $this->getInstance(true)->set($this->getKey($key), $value, $ttl, $this->getKey($tag));
+        return static::getInstance(true)->set(static::getKey($key), $value, $ttl, static::getKey($tag));
     }
 
     /**
@@ -203,13 +203,13 @@ class Mem
      *
      * @return bool
      */
-    public function delete($key)
+    public static function delete($key)
     {
-        if (isset($this->cachedKeys[$key])) {
-            unset($this->buffer[$key]);
+        if (isset(static::$cachedKeys[$key])) {
+            unset(static::$buffer[$key]);
         }
 
-        return $this->getInstance(true)->delete($this->getKey($key));
+        return static::getInstance(true)->delete(static::getKey($key));
     }
 
     /**
@@ -217,11 +217,11 @@ class Mem
      *
      * @return bool
      */
-    public function clear()
+    public static function clear()
     {
-        $this->buffer = [];
+        static::$buffer = [];
 
-        return $this->getInstance(true)->clear();
+        return static::getInstance(true)->clear();
     }
 
     /**
@@ -232,25 +232,25 @@ class Mem
      *
      * @return array
      */
-    public function getMultiple($keys, $default = null)
+    public static function getMultiple($keys, $default = null)
     {
-        if (!$this->disabled) {
+        if (!static::$disabled) {
             $_keys  = [];
             $values = [];
 
             foreach ($keys as $index => $key) {
-                if (isset($this->buffer[$key])) {
-                    $values[$key] = $this->buffer[$key];
+                if (isset(static::$buffer[$key])) {
+                    $values[$key] = static::$buffer[$key];
                 } else {
-                    $_keys[$index] = $this->getKey($key);
+                    $_keys[$index] = static::getKey($key);
                 }
             }
 
-            $values = array_combine($keys, array_values(array_merge($values, $this->getInstance(false)->getMultiple($_keys))));
+            $values = array_combine($keys, array_values(array_merge($values, static::getInstance(false)->getMultiple($_keys))));
 
             foreach ($values as $key => $value) {
-                if (in_array($key, $this->cachedKeys) && !isset($this->buffer[$key])) {
-                    $this->buffer[$key] = $value;
+                if (in_array($key, static::$cachedKeys) && !isset(static::$buffer[$key])) {
+                    static::$buffer[$key] = $value;
                 }
             }
 
@@ -269,18 +269,18 @@ class Mem
      *
      * @return bool
      */
-    public function setMultiple($values, $ttl = null, $tag = null)
+    public static function setMultiple($values, $ttl = null, $tag = null)
     {
         $keys = [];
         foreach (array_keys($values) as $key) {
-            if (isset($this->cachedKeys[$key])) {
-                unset($this->buffer[$key]);
+            if (isset(static::$cachedKeys[$key])) {
+                unset(static::$buffer[$key]);
             }
 
-            $keys[] = $this->getKey($key);
+            $keys[] = static::getKey($key);
         }
 
-        return $this->getInstance(true)->setMultiple(array_combine($keys, array_values($values)), $ttl, $this->getKey($tag));
+        return static::getInstance(true)->setMultiple(array_combine($keys, array_values($values)), $ttl, static::getKey($tag));
     }
 
     /**
@@ -290,15 +290,15 @@ class Mem
      *
      * @return bool
      */
-    public function deleteMultiple($keys)
+    public static function deleteMultiple($keys)
     {
         foreach ($keys as $key) {
-            if (isset($this->cachedKeys[$key])) {
-                unset($this->buffer[$key]);
+            if (isset(static::$cachedKeys[$key])) {
+                unset(static::$buffer[$key]);
             }
         }
 
-        return $this->getInstance(true)->deleteMultiple($keys);
+        return static::getInstance(true)->deleteMultiple($keys);
     }
 
     /**
@@ -308,9 +308,9 @@ class Mem
      *
      * @return bool
      */
-    public function has($key)
+    public static function has($key)
     {
-        return $this->getInstance(true)->has($key);
+        return static::getInstance(true)->has($key);
     }
 
     /**
@@ -320,9 +320,9 @@ class Mem
      *
      * @return array
      */
-    public function getByTag($tag)
+    public static function getByTag($tag)
     {
-        return $this->getInstance(false)->getByTag($this->getKey($tag));
+        return static::getInstance(false)->getByTag(static::getKey($tag));
     }
 
     /**
@@ -332,8 +332,8 @@ class Mem
      *
      * @return bool
      */
-    public function deleteByTag($tag)
+    public static function deleteByTag($tag)
     {
-        return $this->getInstance(true)->deleteByTag($this->getKey($tag));
+        return static::getInstance(true)->deleteByTag(static::getKey($tag));
     }
 }
