@@ -1,9 +1,9 @@
 <?php
 
-namespace AEngine\Memory\Driver;
+namespace Alksily\Memory\Driver;
 
-use AEngine\Memory\CacheException;
-use AEngine\Memory\Interfaces\DriverInterface;
+use Alksily\Memory\CacheException;
+use Alksily\Memory\Interfaces\DriverInterface;
 use DateInterval;
 use Memcached;
 

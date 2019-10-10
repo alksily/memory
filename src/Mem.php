@@ -1,8 +1,8 @@
 <?php
 
-namespace AEngine\Memory;
+namespace Alksily\Memory;
 
-use AEngine\Memory\Interfaces\DriverInterface;
+use Alksily\Memory\Interfaces\DriverInterface;
 use RuntimeException;
 
 /**
@@ -73,7 +73,7 @@ class Mem
             switch (strtolower($config['driver'])) {
                 case 'memcache':
                     static::$connection[$role][] = function () use ($config) {
-                        return new \AEngine\Memory\Driver\Memcache(
+                        return new \Alksily\Memory\Driver\Memcache(
                             $config['host'],
                             $config['port'],
                             $config['timeout'],
@@ -83,7 +83,7 @@ class Mem
                     break;
                 case 'redis':
                     static::$connection[$role][] = function () use ($config) {
-                        return new \AEngine\Memory\Driver\Redis(
+                        return new \Alksily\Memory\Driver\Redis(
                             $config['host'],
                             $config['port'],
                             $config['timeout'],

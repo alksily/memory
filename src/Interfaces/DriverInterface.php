@@ -1,6 +1,6 @@
 <?php
 
-namespace AEngine\Memory\Interfaces;
+namespace Alksily\Memory\Interfaces;
 
 interface DriverInterface
 {

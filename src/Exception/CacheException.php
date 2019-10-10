@@ -1,6 +1,6 @@
 <?php
 
-namespace AEngine\Memory;
+namespace Alksily\Memory;
 
 use Exception;
 

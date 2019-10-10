@@ -1,15 +1,14 @@
 {
-    "name": "aengine/memory",
+    "name": "alksily/memory",
     "description": "Memcache or Redis wrapper",
     "keywords": [
         "php",
-        "AEngine",
         "Memory",
         "Memcache",
         "Redis",
         "PDO"
     ],
-    "homepage": "https://github.com/AEngine/memory",
+    "homepage": "https://github.com/alksily/memory",
     "license": "MIT",
     "authors": [
         {
@@ -24,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AEngine\\Memory\\": "src/"
+            "Alksily\\Memory\\": "src/"
         }
     }
 }
