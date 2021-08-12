@@ -67,7 +67,7 @@ class Redis implements DriverInterface
 
         $result = $this->connection->set($key, $value);
         if ($result && $ttl) {
-            $this->connection->setTimeout($key, $ttl);
+            $this->connection->expire($key, $ttl);
         }
 
         return $result;
@@ -82,7 +82,7 @@ class Redis implements DriverInterface
      */
     public function delete($key): bool
     {
-        return !!$this->connection->delete($key);
+        return !!$this->connection->del($key);
     }
 
     /**
@@ -127,7 +127,7 @@ class Redis implements DriverInterface
         $result = $this->connection->mset($values);
         if ($result && $ttl) {
             foreach ($values as $key => $value) {
-                $this->connection->setTimeout($key, $ttl);
+                $this->connection->expire($key, $ttl);
             }
         }
 
@@ -143,7 +143,7 @@ class Redis implements DriverInterface
      */
     public function deleteMultiple($keys): bool
     {
-        return !!$this->connection->delete($keys);
+        return !!$this->connection->del($keys);
     }
 
     /**
@@ -188,7 +188,7 @@ class Redis implements DriverInterface
         if (($keys = $this->get($tag)) !== false) {
             $keys[] = $tag;
 
-            return !!$this->connection->delete($keys);
+            return !!$this->connection->del($keys);
         }
 
         return false;
